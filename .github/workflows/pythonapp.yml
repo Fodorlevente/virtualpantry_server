@@ -39,4 +39,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest tests/test DBConnection.py
+        pytest tests/test__DBConnection.py
