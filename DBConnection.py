@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
 
-__food_types = ["sustainable food", "spices", "drinks", "perishable food"]
+
 
 class DBConnection():
 
@@ -17,6 +17,12 @@ class DBConnection():
         self.db = self.cluster[self.cluster_name]
         self.collection = self.db[self.db_name]
 
+        self.__food_types = [
+            "sustainable food",
+            "spices",
+            "drinks",
+            "perishable food"
+        ]
     
 
     def insert_single_item_to_db(self, name: str, exp_date: datetime, type: str, location: str = "Unknown"):
@@ -25,7 +31,7 @@ class DBConnection():
             "exp_date": exp_date,
             "location": location,
             "type": type,
-            "date_of_shopping": datetime.now()
+            "date_of_shopping": datetime.utcnow()
         })
 
     def delete_single_item_from_db(self,ids):
@@ -36,6 +42,10 @@ class DBConnection():
 
     def find_all_items(self):
         return self.collection.find()
+
+    def find_all_items_2(self):
+        foods = self.collection.find()
+        return [item for item in foods]
 
     def find_items_by_name(self,name: str):
         return self.collection.find({"name": name})
@@ -52,6 +62,12 @@ class DBConnection():
 
     def get_count_of_items_by_type(self, type: str):
         return self.collection.find({"type": type}).count()
+
+    def counts_per_type(self):
+        tyepes_and_counts = {}
+        for i in self.__food_types:
+            tyepes_and_counts[i] = self.get_count_of_items_by_type(i)
+        return tyepes_and_counts
 
 # my_conn = DBConnection("virtualspiceapp", "spice", "SpiceAdmin","SpiceAdmin123")
 # my_conn.print_results(my_conn.find_all_items())
