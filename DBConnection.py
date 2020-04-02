@@ -64,10 +64,16 @@ class DBConnection():
         return self.collection.find({"type": type}).count()
 
     def counts_per_type(self):
-        tyepes_and_counts = {}
+        tyepes_and_counts = []
         for i in self.__food_types:
-            tyepes_and_counts[i] = self.get_count_of_items_by_type(i)
+            tyepes_and_counts.append(self.create_type_and_piece_object(i, self.get_count_of_items_by_type(i)))
         return tyepes_and_counts
+
+    def create_type_and_piece_object(self, _name: str, _piece):
+        return {
+            'name' :  _name,
+            'piece' : _piece
+        }
 
 # my_conn = DBConnection("virtualspiceapp", "spice", "SpiceAdmin","SpiceAdmin123")
 # my_conn.print_results(my_conn.find_all_items())

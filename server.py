@@ -60,9 +60,9 @@ def get_number_of_all_items():
     return jsonify(my_conn.get_count_of_all_items())
     
 
-@app.route("/api/test")
-def testestest():
-    return jsonify(my_conn.counts_per_type())
+@app.route("/api/getcountoftypes")
+def get_count_of_types():
+    return json.dumps(my_conn.counts_per_type())
 
 @app.route("/api/shoppinglist")
 def shoppinglist():
