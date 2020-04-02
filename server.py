@@ -13,33 +13,9 @@ try:
 except pymongo.errors.OperationFailure:
     print("Authentication error: The Username or Password is not valid")
 
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        return json.JSONEncoder.default(self, o)
-
-
-
 @app.route("/api/virtualspice")
 def virtualspice():
-    # foods_list = list(my_conn.find_all_items())
-    # return json.dumps(foods_list, default=json_util.default)
-    # return dumps(my_conn.find_all_items())
-    # foods_list = [item for item in my_conn.find_all_items()]
-
-    # return json.dumps(aaaa(foods_list))
     return dumps(my_conn.find_all_items_2())
-
-
-def aaaa(list):
-    ret_list = []
-    for i in list:
-        if i == objectid.ObjectId:
-            print(i)
-            ret_list.append("almaaa")
-    return ret_list
 
 @app.route("/api/virtualspice/<name>")
 def get_foods_by_name(name):
@@ -47,8 +23,13 @@ def get_foods_by_name(name):
 
 @app.route("/api/virtualspice/delete/<id>")
 def delete_foods_by_id(id):
-    my_conn.delete_single_item_from_db(id)
-    return None
+    try:
+        my_conn.delete_single_item_from_db(id)
+        resp = jsonify(success=True)
+        return resp
+    except:
+        resp = jsonify(success=False)
+        return resp
 
 @app.route("/api/virtualspice/delete/all")
 def delete_all_foods():
@@ -59,7 +40,6 @@ def delete_all_foods():
 def get_number_of_all_items():
     return jsonify(my_conn.get_count_of_all_items())
     
-
 @app.route("/api/getcountoftypes")
 def get_count_of_types():
     return json.dumps(my_conn.counts_per_type())
